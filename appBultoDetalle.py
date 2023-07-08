@@ -12,9 +12,9 @@ from sklearn.cluster import AgglomerativeClustering
 import scipy.cluster.hierarchy as shc
 from yellowbrick.cluster import KElbowVisualizer
 
-#import gspread
-#from google.oauth2 import service_account
-#from google.oauth2.service_account import Credentials
+import gspread
+from google.oauth2 import service_account
+from google.oauth2.service_account import Credentials
 
 st.set_page_config(page_title='***TSC - APLICACIONES WEB***',page_icon='🤡',layout='wide')
 st.title(':sunglasses: :sun_with_face: :face_with_cowboy_hat: :green[Creación de Bultos por Machine Learning] :sunglasses: :sun_with_face: :face_with_cowboy_hat:')
