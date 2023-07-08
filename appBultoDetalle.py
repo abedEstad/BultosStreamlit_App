@@ -15,8 +15,6 @@ import gspread
 from google.oauth2 import service_account
 from google.oauth2.service_account import Credentials
 
-import numpy as np
-
 
 
 st.set_page_config(page_title='***TSC - APLICACIONES WEB***',page_icon='🤡',layout='wide')
@@ -139,4 +137,6 @@ if archivo_subida_excel is not None:
   basedatos_CatalogoEmpaque_U.rename(columns={ basedatos_CatalogoEmpaque_U.columns[0]: "FORMA" }, inplace = True)
   final99 = final[final.loc[:,'Cluster']==99]
 
+
   st.write(final99)
+
