@@ -134,5 +134,60 @@ if archivo_subida_excel is not None:
   basedatos_CatalogoEmpaque_U.iloc[:,0]=basedatos_CatalogoEmpaque_U.iloc[:,0].astype('int64')
   basedatos_CatalogoEmpaque_U.rename(columns={ basedatos_CatalogoEmpaque_U.columns[0]: "FORMA" }, inplace = True)
   final99 = final[final.loc[:,'Cluster']==99]
-  st.write(final99)
+  if len(final99)>0:
+    union = final99.merge(basedatos_CatalogoEmpaque_U[['Bulto','FORMA']],on='FORMA',how='left') #criterio es Bulto y NuevoGrupo es decir por cada bulto generamos un minibulto
+    union=union.fillna('')
+    union['Llave']=union['DESP']+'_'+union['Bulto']
+    union['Llave']=union['Llave'].astype('str')
+    tablaDinAOrden = union.sort_values(['Llave','TOTAL'])
+    tablaDinAOrden['SumaPeso'] = tablaDinAOrden.groupby('Llave')[['TOTAL']].cumsum()
+    pesoTope=250
+    tablaDinAOrden['Agrupaciones'] = tablaDinAOrden.groupby('Llave')[['TOTAL']].cumsum() // pesoTope
+    tablaDinAOrden['NuevoGrupo'] = (tablaDinAOrden.groupby('Llave')
+                  .apply(lambda g: g.groupby('Agrupaciones').ngroup()+1)
+                  .droplevel(0)
+                )
+    tablaDinAOrden.loc[:,'NuevoGrupo']=tablaDinAOrden.loc[:,'NuevoGrupo'].astype('str')
+    tablaDinAOrden['IdGenereado']=tablaDinAOrden['Bulto']+"_"+tablaDinAOrden['NuevoGrupo']
+    tablaDinAOrden['ClusterFinal'] = tablaDinAOrden.groupby("DESP")["IdGenereado"].transform(lambda x: pd.factorize(x)[0] + 1)
+    
+  finalNo99 = final[final.loc[:,'Cluster']!=99]
+  finalNo99.loc[:,'Cluster'].unique()
+
+  if len(finalNo99)>0:
+    union2 = finalNo99.merge(basedatos_CatalogoEmpaque_U[['Bulto','FORMA']],on='FORMA',how='left') #criterio es Cluster y NuevoGrupo es decir por cada bulto generamos un minibulto
+    union2=union2.fillna('')
+
+    union2.loc[:,'Cluster']=union2.loc[:,'Cluster'].astype('str')
+    union2['Llave']=union2.loc[:,'DESP']+'_'+union2.loc[:,'Cluster']
+    finalNo99Orden = union2.sort_values(['Llave','TOTAL'])
+    finalNo99Orden['SumaPeso'] = finalNo99Orden.groupby('Llave')[['TOTAL']].cumsum()
+    pesoTope=250
+    finalNo99Orden['Agrupaciones'] = finalNo99Orden.groupby('Llave')[['TOTAL']].cumsum() // pesoTope
+    finalNo99Orden['NuevoGrupo'] = (finalNo99Orden.groupby('Llave')
+                  .apply(lambda g: g.groupby('Agrupaciones').ngroup()+1)
+                  .droplevel(0)
+                )
+
+    finalNo99Orden.loc[:,'NuevoGrupo']=finalNo99Orden.loc[:,'NuevoGrupo'].astype('str')
+    finalNo99Orden['IdGenereado']=finalNo99Orden['Cluster']+"_"+finalNo99Orden['NuevoGrupo']
+    finalNo99Orden['ClusterFinal'] = finalNo99Orden.groupby("DESP")["IdGenereado"].transform(lambda x: pd.factorize(x)[0] + 1)
+  
+  if len(final99)>0 & len(finalNo99)>0:
+    dataConBultos = pd.concat([tablaDinAOrden, finalNo99Orden], axis=0)
+  else:
+    if  len(final99)>0 & len(finalNo99)==0:
+      dataConBultos = tablaDinAOrden
+    else:
+      dataConBultos = finalNo99Orden
+  
+  if len(dfPlanillaPREARMADOS)>0:
+    dataConBultosFINAL=pd.concat([dataConBultos, dfPlanillaPREARMADOS], axis=0)
+    dataConBultosFINAL = dataConBultosFINAL.replace(np.nan, '', regex=True)
+    dataConBultosFINAL = dataConBultosFINAL.replace("NaT", '', regex=True)
+    dataConBultosFINAL = dataConBultosFINAL.replace("nan", '', regex=True)
+
+  else:
+    dataConBultosFINAL=dataConBultos
+  st.write(dataConBultos)
 
