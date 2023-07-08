@@ -113,4 +113,5 @@ if archivo_subida_excel is not None:
   ## fila 2 hacia adelante solo de la columna cluster
   dataFila_final=dataFila.iloc[2:,21]
   final =pd.concat([data_planilla_df,dataFila_final],axis=1)
+  st.write(final99)
 
