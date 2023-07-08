@@ -22,9 +22,6 @@ from sklearn import preprocessing
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 import seaborn as sns 
-import plotly as py
-import plotly.io as pio
-import plotly.express as px
 from yellowbrick.cluster import KElbowVisualizer
 from sklearn.cluster import AgglomerativeClustering
 import scipy.cluster.hierarchy as shc
