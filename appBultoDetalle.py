@@ -188,5 +188,33 @@ if archivo_subida_excel is not None:
     dataConBultosFINAL = dataConBultosFINAL.replace("nan", '', regex=True)
   else:
     dataConBultosFINAL=dataConBultos
+  
+  dataConBultosFINAL=dataConBultosFINAL.sort_values(['DESP'],ascending=True)
+  with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
+        pandas.io.formats.excel.ExcelFormatter.header_style =None
+        # Write each dataframe to a different worksheet.
+        dataConBultosFINAL.to_excel(writer, sheet_name='PLANILLA',index=False)
+        workbook = writer.book
+        worksheet = writer.sheets['PLANILLA']
+        font_fmt_A = workbook.add_format({'font_name': 'Arial', 'font_size': 11, 'bold':True, 'font_color':'#FFFFFF' ,'bg_color':'#244062'})
+        font_fmt_B = workbook.add_format({'font_name': 'Arial', 'font_size': 11, 'font_color':'#FFFFFF','bg_color':'#244062'})
+        header_fmt = workbook.add_format({'font_name': 'Arial', 'font_size': 11, 'font_color':'black','bg_color':'#EBF1DE','text_wrap':True,
+            'valign': 'center','align': 'center', 	'center_across':True})
+        worksheet.set_row(0, None, header_fmt)  
+        worksheet.set_column('A:A', None, font_fmt_A)
+        worksheet.set_column('B:B', None, font_fmt_B)
+
+        dfSelloCalidad.to_excel(writer, sheet_name='RESUMEN',index=False, header=None,startcol=7000)
+
+        # Close the Pandas Excel writer and output the Excel file to the buffer
+        #writer.save()
+        writer.close()
+
+        st.download_button(
+        label='Descargar',
+        data=buffer,
+        file_name=nombreFinal+".xlsx",
+        mime="application/vnd.ms-excel"
+        )  
   st.write(dataConBultosFINAL)
 
