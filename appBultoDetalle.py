@@ -18,6 +18,7 @@ from google.oauth2.service_account import Credentials
 
 import io
 from io import BytesIO
+import pandas.io.formats.exce
 buffer = io.BytesIO()
 
 st.set_page_config(page_title='***TSC - APLICACIONES WEB***',page_icon='🤡',layout='wide')
