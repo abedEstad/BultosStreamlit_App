@@ -3,6 +3,7 @@ import os.path
 import pathlib
 import pandas as pd
 import openpyxl
+import numpy as np
 
 from sklearn import preprocessing 
 from sklearn.cluster import KMeans
