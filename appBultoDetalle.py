@@ -11,21 +11,15 @@ import gspread
 import numpy as np
 from pandas.core.frame import DataFrame
 import pandas.io.formats.excel
-from datetime import datetime, timedelta, date
-import datetime
 
 from google.oauth2 import service_account
 from google.oauth2.service_account import Credentials
-import pytz
 
 from sklearn import preprocessing 
 from sklearn.cluster import KMeans
-import matplotlib.pyplot as plt
-import seaborn as sns 
 from yellowbrick.cluster import KElbowVisualizer
 from sklearn.cluster import AgglomerativeClustering
 import scipy.cluster.hierarchy as shc
-from matplotlib import pyplot
 from yellowbrick.cluster import KElbowVisualizer
 import statistics
 
