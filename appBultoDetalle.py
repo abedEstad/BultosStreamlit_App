@@ -4,7 +4,15 @@ import pathlib
 import pandas as pd
 import openpyxl
 
-st.set_page_config(page_title='TSC - APLICACIONES WEB',page_icon='🤡',layout='wide')
+from sklearn import preprocessing 
+from sklearn.cluster import KMeans
+from yellowbrick.cluster import KElbowVisualizer
+from sklearn.cluster import AgglomerativeClustering
+import scipy.cluster.hierarchy as shc
+from yellowbrick.cluster import KElbowVisualizer
+
+
+st.set_page_config(page_title='***TSC - APLICACIONES WEB***',page_icon='🤡',layout='wide')
 st.title(':sunglasses: :sun_with_face: :face_with_cowboy_hat: :green[Creación de Bultos por Machine Learning] :sunglasses: :sun_with_face: :face_with_cowboy_hat:')
 st.write('_Esta es una version de app que permite subir un archivo excel, editarlo, guardarlo y exportarlo a tu directorio. EXCEL XLSX!_ :sunglasses:')
 
@@ -61,5 +69,52 @@ if archivo_subida_excel is not None:
 
   dataFila=data_planilla_df.iloc[[1,2],13:34]
   dataFila['Cluster']=999
-  st.write(dataFila)
+
+  for i in range(len(unicosLlaves)):
+    dataPlanilla_df8=data_planilla_df[data_planilla_df["DESP"].isin([unicosLlaves[i]])]
+    # data_planillaML8=dataPlanilla_df8.iloc[:,[3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18]]
+    data_planillaML8=dataPlanilla_df8.iloc[:,13:34]
+    min_max_scaler = preprocessing.MinMaxScaler() 
+    escalado = min_max_scaler.fit_transform(data_planillaML8)
+    df_escalado = pd.DataFrame(escalado) 
+    #df_escalado = df_escalado.rename(columns = {0:'Forma', 1: 'a', 2: 'b',3:'c', 4:'d', 5:'Alfa', 6:'Beta',7:'Gama', 8: 'Radio', 9: 'CantxElemen',10:'Diam', 11:'Longitud', 12:'PesoDeFab',13:'Long_Fab', 14:'Cant_Total',15:'Total'})
+    df_escalado = df_escalado.rename(columns = {0:'Forma',1:'Radio', 2: 'a', 3: 'b',4:'c', 5:'d', 6:'e', 7:'f', 8:'g', 9:'h', 10:'i', 11:'Alfa', 12:'Beta',
+                                              13:'Gama',14:'CantxElemen', 15:'Cant_Total',16:'Diam', 17:'Longitud',18:'Total',19:'Long_Fab',20:'PesoDeFab'})
+
+    #La data tiene 16 columnas
+    if len(df_escalado) <= 21:
+        data_planillaML8['Cluster']=99
+        dataMenor21 = data_planillaML8
+        dataFila = pd.concat([dataFila, dataMenor21], axis=0)
+    else:
+        model = KMeans()
+        visualizer = KElbowVisualizer(model, k=(1,20),random_state = 12332)
+        visualizer.fit(df_escalado)        
+        #visualizer.show()
+        cluster_codo =visualizer.elbow_value_
+        cluster_codo
+        lst.append(cluster_codo)
+        #Modelo Jerarquico
+        hc = AgglomerativeClustering(n_clusters = cluster_codo, 
+                      affinity = 'euclidean', 
+                      linkage = 'ward')
+        etiquetas = hc.fit_predict(df_escalado)
+        df_escalado['Cluster']=etiquetas
+        data_planillaML8['Cluster']=etiquetas
+        dataFinal = data_planillaML8
+        #dataFinal = data_planillaML8.values.tolist()
+        #lista.append(dataFinal)
+        dataFila = pd.concat([dataFila, dataFinal], axis=0)
+
+
+  ## fila 2 hacia adelante solo de la columna cluster
+  dataFila_final=dataFila.iloc[2:,21]
+  final =pd.concat([data_planilla_df,dataFila_final],axis=1)
+  st.write(final)
+  
+
+
+
+  
+  
 
