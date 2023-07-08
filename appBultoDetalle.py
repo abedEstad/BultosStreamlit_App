@@ -186,8 +186,7 @@ if archivo_subida_excel is not None:
     dataConBultosFINAL = dataConBultosFINAL.replace(np.nan, '', regex=True)
     dataConBultosFINAL = dataConBultosFINAL.replace("NaT", '', regex=True)
     dataConBultosFINAL = dataConBultosFINAL.replace("nan", '', regex=True)
-
   else:
     dataConBultosFINAL=dataConBultos
-  st.write(dataConBultos)
+  st.write(dataConBultosFINAL)
 
