@@ -232,8 +232,8 @@ if archivo_subida_excel is not None:
         dfSelloCalidad.to_excel(writer, sheet_name='RESUMEN',index=False, header=None,startcol=7000)
 
         # Close the Pandas Excel writer and output the Excel file to the buffer
-        writer.save()
-        #writer.close()
+        #writer.save()
+        writer.close()
 
         st.download_button(
         label='Descargar',
