@@ -3,7 +3,6 @@ import os.path
 import pathlib
 import pandas as pd
 import openpyxl
-import numpy as np
 
 from sklearn import preprocessing 
 from sklearn.cluster import KMeans
@@ -15,6 +14,10 @@ from yellowbrick.cluster import KElbowVisualizer
 import gspread
 from google.oauth2 import service_account
 from google.oauth2.service_account import Credentials
+
+import numpy as np
+
+
 
 st.set_page_config(page_title='***TSC - APLICACIONES WEB***',page_icon='🤡',layout='wide')
 st.title(':sunglasses: :sun_with_face: :face_with_cowboy_hat: :green[Creación de Bultos por Machine Learning] :sunglasses: :sun_with_face: :face_with_cowboy_hat:')
@@ -191,6 +194,8 @@ if archivo_subida_excel is not None:
 
   else:
     dataConBultosFINAL=dataConBultos
+  
+  dataConBultosFINAL=dataConBultosFINAL.sort_values(['DESP'],ascending=True)
 
 
   st.write(dataConBultosFINAL)
