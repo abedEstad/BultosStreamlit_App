@@ -70,4 +70,5 @@ validators==0.20.0
 watchdog==3.0.0
 yellowbrick==1.5
 zipp==3.15.0
+XlsxWriter==3.1.2
 
