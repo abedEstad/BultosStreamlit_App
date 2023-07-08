@@ -191,6 +191,6 @@ if archivo_subida_excel is not None:
   else:
     dataConBultosFINAL=dataConBultos
   
-  st.write(dataConBultosFINAL)
+  st.write(dataConBultos)
 
 
