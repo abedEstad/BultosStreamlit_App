@@ -11,6 +11,9 @@ from sklearn.cluster import AgglomerativeClustering
 import scipy.cluster.hierarchy as shc
 from yellowbrick.cluster import KElbowVisualizer
 
+import gspread
+from google.oauth2 import service_account
+from google.oauth2.service_account import Credentials
 
 st.set_page_config(page_title='***TSC - APLICACIONES WEB***',page_icon='🤡',layout='wide')
 st.title(':sunglasses: :sun_with_face: :face_with_cowboy_hat: :green[Creación de Bultos por Machine Learning] :sunglasses: :sun_with_face: :face_with_cowboy_hat:')
@@ -110,11 +113,26 @@ if archivo_subida_excel is not None:
   ## fila 2 hacia adelante solo de la columna cluster
   dataFila_final=dataFila.iloc[2:,21]
   final =pd.concat([data_planilla_df,dataFila_final],axis=1)
-  st.write(final)
-  
 
 
+  scope = ["https://spreadsheets.google.com/feeds",'https://www.googleapis.com/auth/spreadsheets',"https://www.googleapis.com/auth/drive.file","https://www.googleapis.com/auth/drive"]
+  creds = Credentials.from_service_account_file('editor_sheet1.json',scopes=scope) 
+  gc = gspread.authorize(creds)
 
-  
-  
+  hojaCatalogoEmpaque = gc.open_by_key('13Mg1kfcd_lWeT-d-y5FMX9DnDuHCHAPLcHRPwgPbZGA').worksheet('Data')
+  columna_referencia_CatalogoEmpaque = hojaCatalogoEmpaque.col_values(1)
+  num_filas_CatalogoEmpaque = len(columna_referencia_CatalogoEmpaque)
+  all_valores_CatalogoEmpaque = hojaCatalogoEmpaque.get_all_values()
+  header_bddf_CatalogoEmpaque = all_valores_CatalogoEmpaque[4]
+  valoresTrabajar_CatalogoEmpaque = all_valores_CatalogoEmpaque[5:num_filas_CatalogoEmpaque]
+  basedatos_CatalogoEmpaque = pd.DataFrame(valoresTrabajar_CatalogoEmpaque) 
+  basedatos_CatalogoEmpaque.columns = header_bddf_CatalogoEmpaque
+  basedatos_CatalogoEmpaque.rename(columns={ basedatos_CatalogoEmpaque.columns[3]:'Bulto' }, inplace = True)
 
+
+  basedatos_CatalogoEmpaque_U=basedatos_CatalogoEmpaque.iloc[:,[1,3]]
+  basedatos_CatalogoEmpaque_U.iloc[:,0]=basedatos_CatalogoEmpaque_U.iloc[:,0].astype('int64')
+  basedatos_CatalogoEmpaque_U.rename(columns={ basedatos_CatalogoEmpaque_U.columns[0]: "FORMA" }, inplace = True)
+  final99 = final[final.loc[:,'Cluster']==99]
+
+  st.write(final99)
