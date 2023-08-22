@@ -194,9 +194,9 @@ if archivo_subida_excel is not None:
     dataConBultosFINAL = dataConBultosFINAL.replace("nan", '', regex=True)
   else:
     dataConBultosFINAL=dataConBultos
-  
   dataConBultosFINAL=dataConBultosFINAL.sort_values(['DESP'],ascending=True)
-  dataConBultosFINAL=dataConBultosFINAL.iloc[:,np.r_[0:41,49]
+  dataConBultosFINAL=dataConBultosFINAL.iloc[:,np.r_[0:41,49]]
+  
   with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
         pandas.io.formats.excel.ExcelFormatter.header_style =None
         # Write each dataframe to a different worksheet.
