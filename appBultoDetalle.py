@@ -35,7 +35,7 @@ if archivo_subida_excel is not None:
   nombreFinal = nombre.split('.')[0]
   st.write('Nombre:',nombre)
   dfPlanilla = pd.read_excel(archivo_subida_excel,sheet_name='PLANILLA',engine='openpyxl',header=0,usecols="A:AP",na_filter=False)
-  dfSelloCalidad = pd.read_excel(archivo_subida_excel,sheet_name='RESUMEN',engine='openpyxl',header=None,usecols="JIE:JIS",na_filter=False)
+  dfSelloCalidad = pd.read_excel(archivo_subida_excel,sheet_name='RESUMEN',engine='openpyxl',header=None,usecols="JI:JI",na_filter=False)
   dfPlanilla.rename(columns={ dfPlanilla.columns[0]: "DESP" }, inplace = True)
   dfPlanilla.rename(columns={ dfPlanilla.columns[36]: "PRODUCTO" }, inplace = True)
   dfPlanilla.rename(columns={ dfPlanilla.columns[13]: "FORMA" }, inplace = True)
